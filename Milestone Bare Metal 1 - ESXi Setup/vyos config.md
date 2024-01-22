@@ -1,6 +1,6 @@
 # Vyos configuration
 Below are the command I ran to confgure the fw for our lab:
-<!-- 
+<!-- -->
 install image
 configure
 show interfaces
@@ -16,7 +16,7 @@ commit
 save
 exit
 poweroff,y 
--->
+<!-- -->
 
 ## Interfaces and services
 Below is the finsished configuration:
