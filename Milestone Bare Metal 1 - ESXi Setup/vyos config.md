@@ -1,12 +1,7 @@
-[^1]# Vyos configuration
+# Vyos configuration
+
 Below are the command I ran to confgure the fw for our lab:
-<<<<<<< HEAD
-<!-- 
 `install image
-=======
-<!-- -->
-install image
->>>>>>> b239673350028b42e69b05ada82edc997aea7cfc
 configure
 show interfaces
 delete interfaces ethernet eth0 hw-id
@@ -20,13 +15,7 @@ set service ssh listen-addesss 0.0.0.0
 commit
 save
 exit
-<<<<<<< HEAD
 poweroff,y `
--->
-=======
-poweroff,y 
-<!-- -->
->>>>>>> b239673350028b42e69b05ada82edc997aea7cfc
 
 ## Interfaces and services
 Below is the finsished configuration:
