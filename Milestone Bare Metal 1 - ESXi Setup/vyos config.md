@@ -1,21 +1,21 @@
-# Vyos configuration
+[^1]# Vyos configuration
 Below are the command I ran to confgure the fw for our lab:
 <!-- 
-install image
+`install image
 configure
 show interfaces
 delete interfaces ethernet eth0 hw-id
 delete interfaces ethernet eth1 hw-id
 commit
 save
-show interfaces
+show interfaces[^1]
 set interfaces ethernet eth0 address dhcp
 set interfaces ethernet eth1 address dhcp
 set service ssh listen-addesss 0.0.0.0
 commit
 save
 exit
-poweroff,y 
+poweroff,y `
 -->
 
 ## Interfaces and services
@@ -39,7 +39,7 @@ I ran the following commands to set the ip address for my eth0:
 -->
 ![5.png](./images/5.png)
 <!--
-    set protocols static route 0.0.0.0/0 next-hop 192.168.7.250
+    set protocols static route 0.0.0.0/0 next-hop 192.168.7.250[^1]
     set interfaces ethernet eth0 description CYBERLAB
     set interfaces ethernet eth1 description 480-WAN
     set interfaces ethernet eth1 address 10.0.17.2/24
@@ -60,3 +60,6 @@ I ran the following commands to set the ip address for my eth0:
 
 
 
+[^1]: 
+[^1]: 
+[^1]: 
