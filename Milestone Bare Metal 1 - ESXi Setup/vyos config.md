@@ -21,6 +21,7 @@ poweroff,y
 
 ## Interfaces and services
 Below is the finsished configuration:
+
 ![1.png](./images/1.png)
 
 After that we need to remove the ISO  iamge from the CD/DVD drive and I will be taking a Snapshot after: 
