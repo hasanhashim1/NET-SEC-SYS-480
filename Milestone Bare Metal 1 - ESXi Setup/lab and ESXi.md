@@ -79,7 +79,7 @@ In this step the it only need one netwrok adapter and some of the settings are d
 
 ## Vyos and xubuntu configurtation
 1. [vyos configuration](./vyos%20config.md)
-2. xubuntu
+2. [xubuntu](xubuntu.md)
 
 
 
