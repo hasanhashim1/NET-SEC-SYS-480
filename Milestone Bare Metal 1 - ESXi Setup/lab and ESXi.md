@@ -78,7 +78,7 @@ In this step the it only need one netwrok adapter and some of the settings are d
 ![31.png](./images/31.png)
 
 ## Vyos and xubuntu configurtation
-1. [vyos configuration]([[vyos config]])
+1. [vyos configuration](./vyos config)
 2. xubuntu
 
 
