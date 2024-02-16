@@ -1,0 +1,15 @@
+Add-DnsServerPrimaryZone -NetworkID 10.0.17.0/24 -ZoneFile “10.0.17.4.in-addr.arpa.dns”
+
+Add-DnsServerResourceRecordA -Name "vcenter" -ZoneName "Hasan.local" -AllowUpdateAny -IPv4Address "10.0.17.3" 
+Add-DnsServerResourceRecordPtr -Name "vcenter" -ZoneName "17.0.10.in-addr.arpa" -AllowUpdateAny -PtrDomainName "sarah.local"
+
+Add-DnsServerResourceRecordA -Name "480-fw" -ZoneName "Hasan.local" -AllowUpdateAny -IPv4Address "10.0.17.2" 
+Add-DnsServerResourceRecordPtr -Name "480-fw" -ZoneName "17.0.10.in-addr.arpa" -AllowUpdateAny -PtrDomainName "sarah.local"
+
+Add-DnsServerResourceRecordA -Name "xubuntu-wan" -ZoneName "Hasan.local" -AllowUpdateAny -IPv4Address "10.0.17.100" 
+Add-DnsServerResourceRecordPtr -Name "xubuntu-wan" -ZoneName "17.0.10.in-addr.arpa" -AllowUpdateAny -PtrDomainName "Hasan.local"
+
+Add-DnsServerResourceRecordPtr -Name "dc1" -ZoneName "17.0.10.in-addr.arpa" -AllowUpdateAny -PtrDomainName "Hasan.local"
+
+Get-DnsServerResourceRecord -ZoneName Hasan.local -RRType A | Format-Table
+Get-DnsServerResourceRecord -ZoneName 17.0.10.in-addr.arpa -RRType PTR | Format-Table
