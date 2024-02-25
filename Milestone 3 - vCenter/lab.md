@@ -1,4 +1,19 @@
 # Milestone 3 - vCenter
+
+
+**Resources**   [vcenter8 build demo video](https://drive.google.com/file/d/10-ZEVxxzkSnT_oes68sXKnrpwc8jPEZT/view?usp=share_link) 
+## Requirements
+The rough steps you will take, document and test include:*   Download the vCenter to your datastore
+*   Run the installer on xubuntu-wan
+*   Create a datacenter called 480-yourname
+*   Add your superX esxi system to your datacenter as a host\
+## Deliverables
+*   Take a quick demo video that shows the running VMs within your 480-yourname datacenter.  Upload this video in your text submission or provide a link to your video hosted on google drive or github.
+*   Include in your video a walk through of your
+*   *   Detailed configuration and build steps to include links to any configuration files you need to generate.# Grading Criteria.You must meet all the requirements to move on, this includes comprehensive and professional documentation and journaling.**
+
+
+## Steps
 Add the ISO image into the CD of the xubuntu:
 
 ![1.png](./Images/1.png)
