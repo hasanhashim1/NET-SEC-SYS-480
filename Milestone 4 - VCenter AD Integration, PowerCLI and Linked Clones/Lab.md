@@ -62,6 +62,27 @@ Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false
 
 ![26.png](./Images/26.png)
 
+```
+$vm = Get-VM -Name dc1
+$snapshot = Get-Snapshot -VM $vm -Name "Base"
+$vmhost = Get-VMHost -Name "192.168.7.20"
+$ds = Get-DataStore -Name "datastore1"
+$linkedClone = "{0}.linked" -f $vm.name
+$linkedClone
+```
+![27.png](./Images/27.png)
+
+```
+$linkedVM = New-VM -LinkedClone -Name $linkedClone -VM $vm -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $ds
+$newvm = New-VM -Name "server.2019.gui.base" -VM $linkedVM -VMHost $vmhost -Datastore $ds
+$newvm | New-Snapshot -Name "Base"
+$linkedvm | Remove-VM
+```
+
+![28.png](./Images/28.png)
+
+
+
 
 
 ## Milestone 4.3 Ubuntu Server Base VM and Linked Clone
