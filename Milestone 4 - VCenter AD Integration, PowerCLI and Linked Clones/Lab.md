@@ -228,13 +228,5 @@ Now we going to use the scrept we did and make a clone of the ubuntu Base:
 
 ![42.png](./Images/42.png)
 
-
-
-
-
-
-
-
-
-
-
+## Reflection
+This milestone revolved around integrating vCenter with Active Directory (AD) for streamlined login processes, harnessing the power of PowerShell and PowerCLI on a Xubuntu-WAN environment, and masterfully extracting and cloning virtual machines (VMs) to establish a robust and efficient virtual infrastructure. The initial phase of the project involved setting up an AD Certificate Authority, a critical step that required careful attention to detail and an understanding of PowerShell commands. This foundational work was crucial for securing the communication between vCenter and the Active Directory, ensuring that only authorized users could access the system.
