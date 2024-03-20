@@ -6,7 +6,7 @@ function Clone-MyVM {
     )
 
     try {
-        Write-Host "Alright, let's get the party started! 🎉"
+        Write-Host "Alright, let's get started! 🎉"
         Write-Host "Cloning from: $originalVM"
         Write-Host "Using snapshot: $snapshotName"
         Write-Host "New VM will be: $newVMName"
