@@ -6,7 +6,7 @@ function Clone-MyVM {
     )
 
     try {
-        Write-Host "Alright, let's get the party started! 🎉"
+        Write-Host "Alright, let's get started! 🎉"
         Write-Host "Cloning from: $originalVM"
         Write-Host "Using snapshot: $snapshotName"
         Write-Host "New VM will be: $newVMName"
@@ -29,7 +29,7 @@ function Clone-MyVM {
         # Cleanup the linked clone
         $linkedVM | Remove-VM -Confirm:$false
 
-        Write-Host "Voilà! Your new VM, $newVMName, is ready to rock and roll! 🚀"
+        Write-Host "Your new VM, $newVMName, is ready to go! 🚀"
     }
     catch {
         Write-Host "Uh oh, ran into a snag! 🚨" -ForegroundColor Red
