@@ -1,1 +1,58 @@
-dfsdfas
+function Select-VM([string] $folder){
+    $selected_vm=$null
+    try{
+        $vms = Get-VM -Location $folder
+        $index = 1
+        foreach($vm in $vms){
+            Write-Host "[$index] $($vm.name)"
+            $index += 1
+        }
+        $pick_index = Read-Host "Which index number [x] do you wish to pick?"
+        # TODO: need to deal with an invalid index (consider making this check a function)
+        $selected_vm = $vms[$pick_index - 1]
+        Write-Host "You picked $($selected_vm.name)"
+
+        # New code to clone the VM
+        $snapshotName = Read-Host "Enter the name of the snapshot to use for cloning"
+        $newVMName = Read-Host "Enter the name for the new cloned VM"
+        Clone-MyVM -originalVM $selected_vm.Name -snapshotName $snapshotName -newVMName $newVMName
+        return $selected_vm
+    }
+    catch {
+        Write-Host "Invalid input: $folder" -ForegroundColor Red
+    }
+}
+
+function Clone-MyVM {
+    param(
+        [string]$originalVM,
+        [string]$snapshotName,
+        [string]$newVMName
+    )
+
+    try {
+        Write-Host "Alright, let's get started! 🎉"
+        Write-Host "Cloning from: $originalVM"
+        Write-Host "Using snapshot: $snapshotName"
+        Write-Host "New VM will be: $newVMName"
+
+        $sourceVM = Get-VM -Name $originalVM
+        $snap = Get-Snapshot -VM $sourceVM -Name $snapshotName
+        $hostMachine = Get-VMHost -Name "192.168.7.20"
+        $datastore = Get-Datastore -Name "datastore1"
+
+        $cloneName = "{0}.linked" -f $sourceVM.Name
+        $linkedVM = New-VM -LinkedClone -Name $cloneName -VM $sourceVM -ReferenceSnapshot $snap -VMHost $hostMachine -Datastore $datastore
+        $brandNewVM = New-VM -Name "$newVMName.base" -VM $linkedVM -VMHost $hostMachine -Datastore $datastore
+        $brandNewVM | New-Snapshot -Name "Base"
+
+        $linkedVM | Remove-VM -Confirm:$false
+        Write-Host "Your new VM, $newVMName, is ready to go! 🚀"
+    }
+    catch {
+        Write-Host "Uh oh, ran into a snag! 🚨" -ForegroundColor Red
+        exit
+    }
+}
+
+# Usage remains unchanged, however now you can select and clone VMs with updated Select-VM
