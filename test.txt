@@ -8,18 +8,20 @@ function Select-VM([string] $folder){
             $index += 1
         }
         $pick_index = Read-Host "Which index number [x] do you wish to pick?"
-        # TODO: need to deal with an invalid index (consider making this check a function)
+        # TODO: Validate index number here
         $selected_vm = $vms[$pick_index - 1]
         Write-Host "You picked $($selected_vm.name)"
-
-        # New code to clone the VM
+        
+        # Prompt for snapshot and new VM name
         $snapshotName = Read-Host "Enter the name of the snapshot to use for cloning"
         $newVMName = Read-Host "Enter the name for the new cloned VM"
+
+        # Call Clone-MyVM to clone the selected VM
         Clone-MyVM -originalVM $selected_vm.Name -snapshotName $snapshotName -newVMName $newVMName
-        return $selected_vm
+
     }
     catch {
-        Write-Host "Invalid input: $folder" -ForegroundColor Red
+        Write-Host "An error occurred: $_" -ForegroundColor Red
     }
 }
 
@@ -31,10 +33,9 @@ function Clone-MyVM {
     )
 
     try {
-        Write-Host "Alright, let's get started! 🎉"
-        Write-Host "Cloning from: $originalVM"
-        Write-Host "Using snapshot: $snapshotName"
-        Write-Host "New VM will be: $newVMName"
+        Write-Host "Alright, let's get started on cloning! 🎉"
+        Write-Host "Cloning from: $originalVM using snapshot: $snapshotName"
+        Write-Host "New VM will be named: $newVMName"
 
         $sourceVM = Get-VM -Name $originalVM
         $snap = Get-Snapshot -VM $sourceVM -Name $snapshotName
@@ -43,10 +44,12 @@ function Clone-MyVM {
 
         $cloneName = "{0}.linked" -f $sourceVM.Name
         $linkedVM = New-VM -LinkedClone -Name $cloneName -VM $sourceVM -ReferenceSnapshot $snap -VMHost $hostMachine -Datastore $datastore
-        $brandNewVM = New-VM -Name "$newVMName.base" -VM $linkedVM -VMHost $hostMachine -Datastore $datastore
-        $brandNewVM | New-Snapshot -Name "Base"
+        $brandNewVM = New-VM -Name $newVMName -VM $linkedVM -VMHost $hostMachine -Datastore $datastore
+        $brandNewVM | New-Snapshot -Name "Initial Setup"
 
+        # Optionally, clean up by removing the linked clone VM
         $linkedVM | Remove-VM -Confirm:$false
+
         Write-Host "Your new VM, $newVMName, is ready to go! 🚀"
     }
     catch {
@@ -55,4 +58,4 @@ function Clone-MyVM {
     }
 }
 
-# Usage remains unchanged, however now you can select and clone VMs with updated Select-VM
+# Now you can run Select-VM and provide a folder to pick and clone a VM
