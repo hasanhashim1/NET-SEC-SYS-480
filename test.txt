@@ -1,3 +1,52 @@
+function Get-IP {
+    # Prompt user for the virtual machine name
+    $vmName = Read-Host -Prompt "Enter the name of the VM you wish to get the IP of"
+    
+    # Check if the input is valid
+    if ([string]::IsNullOrWhiteSpace($vmName)) {
+        Write-Host "You must enter a valid VM name. Please try again."
+        return
+    }
+
+    try {
+        # Retrieve virtual machine information
+        $vmInfo = Get-VM -Name $vmName
+        if ($null -eq $vmInfo) {
+            Write-Host "No VM found by the name $vmName"
+            return
+        }
+
+        # Display VM name and IP address
+        Write-Host "VM Name: $($vmInfo.Name)"
+        if ($vmInfo.Guest.IPAddress -ne $null -and $vmInfo.Guest.IPAddress.Length -gt 0) {
+            Write-Host "Primary IP Address: $($vmInfo.Guest.IPAddress[0])"
+        } else {
+            Write-Host "IP Address: IP address not available"
+        }
+
+        # Get and display network adapter details including MAC address
+        $networkAdapters = Get-NetworkAdapter -VM $vmInfo
+        if ($networkAdapters -ne $null) {
+            foreach ($adapter in $networkAdapters) {
+                $output = @{
+                    AdapterName = $adapter.Name
+                    NetworkLabel = $adapter.NetworkName
+                    MACAddress = $adapter.MacAddress
+                    ConnectionState = $adapter.ConnectionState.Connected
+                }
+                $output | Format-Table -Property AdapterName, NetworkLabel, MACAddress, ConnectionState -AutoSize
+            }
+        } else {
+            Write-Host "No network adapters found on VM $vmName"
+        }
+    }
+    catch {
+        Write-Host "Failed to retrieve IP information: $_"
+    }
+}
+
+
+
 function Create_vSwitch {
     # Prompt the user for virtual switch and port group names
     $vSwitchName = Read-Host "Please enter the name for the new virtual switch"
