@@ -16,34 +16,30 @@ function Get-IP {
             return
         }
 
-        # Display VM name and IP address
-        Write-Host "VM Name: $($vmInfo.Name)"
-        if ($vmInfo.Guest.IPAddress -ne $null -and $vmInfo.Guest.IPAddress.Length -gt 0) {
-            Write-Host "Primary IP Address: $($vmInfo.Guest.IPAddress[0])"
-        } else {
-            Write-Host "IP Address: IP address not available"
-        }
+        # Display VM hostname (if available) along with the IP address and other details
+        $guestDetails = $vmInfo.ExtensionData.Guest
+        $vmHostName = $guestDetails.HostName
+        $vmIPs = $guestDetails.IpAddress | Where-Object { $_ -notmatch ":" }  # Filtering out IPv6 addresses if necessary
 
-        # Get and display network adapter details including MAC address
+        # Display basic VM info including hostname and primary IP address
+        Write-Host "VM Name: $($vmInfo.Name)"
+        Write-Host "Hostname: $vmHostName"
+        Write-Host "Primary IP Address: $($vmIPs[0])"  # Assumes the first IP is the relevant one
+
+        # Get and display network adapter details
         $networkAdapters = Get-NetworkAdapter -VM $vmInfo
-        if ($networkAdapters -ne $null) {
-            foreach ($adapter in $networkAdapters) {
-                $output = @{
-                    AdapterName = $adapter.Name
-                    NetworkLabel = $adapter.NetworkName
-                    MACAddress = $adapter.MacAddress
-                    ConnectionState = $adapter.ConnectionState.Connected
-                }
-                $output | Format-Table -Property AdapterName, NetworkLabel, MACAddress, ConnectionState -AutoSize
-            }
-        } else {
-            Write-Host "No network adapters found on VM $vmName"
+        foreach ($adapter in $networkAdapters) {
+            Write-Host "Adapter Name: $($adapter.Name)"
+            Write-Host "Network Name: $($adapter.NetworkName)"
+            Write-Host "MAC Address: $($adapter.MacAddress)"
+            Write-Host "Connection State: $($adapter.ConnectionState.Connected)"
         }
     }
     catch {
         Write-Host "Failed to retrieve IP information: $_"
     }
 }
+
 
 
 
