@@ -53,3 +53,55 @@ function Get-IP {
 }
 
 
+
+function ManageVM {
+    # Prompt user for the virtual machine name
+    $vmName = Read-Host -Prompt "Enter the name of the VM you wish to manage"
+    
+    # Check if the input is valid
+    if ([string]::IsNullOrWhiteSpace($vmName)) {
+        Write-Host "You must enter a valid VM name. Please try again."
+        return
+    }
+
+    # Get the VM object
+    $vm = Get-VM -Name $vmName
+    if ($null -eq $vm) {
+        Write-Host "No VM found by the name $vmName"
+        return
+    }
+
+    # Prompt user for action to perform on the VM
+    $action = Read-Host -Prompt "Do you want to (Status, Start, Stop) the VM? Enter Status, Start or Stop"
+
+    # Perform the requested action
+    switch ($action) {
+        'Status' {
+            $vm | Select-Object Name, PowerState, VMHost, NumCpu, MemoryMB, UsedSpaceGB | Format-Table -AutoSize
+        }
+        'Start' {
+            try {
+                Start-VM -VM $vm -Confirm:$false
+                Write-Host "VM is starting..."
+            }
+            catch {
+                Write-Host "Failed to start VM: $_"
+            }
+        }
+        'Stop' {
+            try {
+                Stop-VM -VM $vm -Confirm:$false
+                Write-Host "VM is stopping..."
+            }
+            catch {
+                Write-Host "Failed to stop VM: $_"
+            }
+        }
+        default {
+            Write-Host "Invalid action selected. Please enter either Status, Start, or Stop."
+        }
+    }
+}
+
+
+
