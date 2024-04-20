@@ -107,6 +107,10 @@ function ManageVM {
 
 
 
+
+
+
+
 function Set-VMNetwork {
     # Prompt user for the virtual machine name
     $vmName = Read-Host -Prompt "Enter the name of the virtual machine you would like to select"
@@ -124,21 +128,21 @@ function Set-VMNetwork {
         return
     }
 
-    # List available networks
+    # Display available networks
     Write-Host "Available networks:"
-    Get-VirtualNetwork | Format-Table Name -AutoSize
+    $networks = Get-VirtualNetwork
+    $networks | Format-Table Name -AutoSize
 
     # Prompt user for the network name
     $networkName = Read-Host -Prompt "Enter the name of the network you would like to select"
 
-    # Check if the network input is valid
+    # Check if the network input is valid and exists
     if ([string]::IsNullOrWhiteSpace($networkName)) {
         Write-Host "You must enter a valid network name. Please try again."
         return
     }
 
-    # Get the network object to confirm it exists
-    $network = Get-VirtualNetwork | Where-Object {$_.Name -eq $networkName}
+    $network = $networks | Where-Object { $_.Name -ieq $networkName } # Case-insensitive comparison
     if ($null -eq $network) {
         Write-Host "No network found by the name $networkName"
         return
@@ -146,13 +150,15 @@ function Set-VMNetwork {
 
     # Set the network adapter to the specified network
     try {
-        Get-NetworkAdapter -VM $vm | Set-NetworkAdapter -NetworkName $networkName -Confirm:$false
+        $networkAdapter = Get-NetworkAdapter -VM $vm
+        if ($networkAdapter -eq $null) {
+            Write-Host "No network adapter found on VM $vmName"
+            return
+        }
+        $networkAdapter | Set-NetworkAdapter -NetworkName $networkName -Confirm:$false
         Write-Host "Network adapter of VM '$vmName' successfully set to '$networkName'."
     }
     catch {
         Write-Host "Failed to set network adapter: $_"
     }
 }
-
-
-
