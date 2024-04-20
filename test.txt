@@ -23,8 +23,23 @@ function Create_vSwitch {
 
 
 
-function Get-IP([string] $vCenter, [string] $virtualMachine){
-    $vmInfo = Get-VM -Name $virtualMachine
-    Get-VM -Name $vmInfo | Select-Object Name, @{N="IP Address";E={@($_.Guest.IPAddress[0])}}
-    Get-NetworkAdapter -Server $vCenter -VM $vmInfo.Name | Format-Table -AutoSize
+function Get-IP {
+    $vmName = Read-Host -Prompt "Enter the name of the VM you wish to get the IP of"
+    
+    try {
+
+        # Retrieve virtual machine information
+        $vmInfo = Get-VM -Name $vmName
+        if ($null -eq $vmInfo) {
+            Write-Host "No VM found by the name $vmName"
+            return
+        }
+
+        $vmInfo | Select-Object Name, @{N="IP Address";E={@($_.Guest.IPAddress[0])}} | Format-Table -AutoSize
+        Get-NetworkAdapter -VM $vmInfo | Format-Table Name, NetworkName, MACAddress, ConnectionState -AutoSize
+    }
+    catch {
+        Write-Host "Failed to retrieve IP information: $_"
+    }
 }
+
