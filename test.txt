@@ -106,25 +106,30 @@ function ManageVM {
 
 
 
+
 function Set-VMNetwork {
     # Prompt user for the virtual machine name
-    $vmName = Read-Host -Prompt "Enter the name of the VM you wish to configure"
-    
+    $vmName = Read-Host -Prompt "Enter the name of the virtual machine you would like to select"
+
     # Check if the input is valid
     if ([string]::IsNullOrWhiteSpace($vmName)) {
         Write-Host "You must enter a valid VM name. Please try again."
         return
     }
 
-    # Retrieve the VM object
+    # Get the VM object
     $vm = Get-VM -Name $vmName
     if ($null -eq $vm) {
         Write-Host "No VM found by the name $vmName"
         return
     }
 
+    # List available networks
+    Write-Host "Available networks:"
+    Get-VirtualNetwork | Format-Table Name -AutoSize
+
     # Prompt user for the network name
-    $networkName = Read-Host -Prompt "Enter the network name to set on VM's network adapter"
+    $networkName = Read-Host -Prompt "Enter the name of the network you would like to select"
 
     # Check if the network input is valid
     if ([string]::IsNullOrWhiteSpace($networkName)) {
@@ -132,20 +137,22 @@ function Set-VMNetwork {
         return
     }
 
+    # Get the network object to confirm it exists
+    $network = Get-VirtualNetwork | Where-Object {$_.Name -eq $networkName}
+    if ($null -eq $network) {
+        Write-Host "No network found by the name $networkName"
+        return
+    }
+
     # Set the network adapter to the specified network
     try {
-        $networkAdapter = Get-NetworkAdapter -VM $vm
-        if ($null -eq $networkAdapter) {
-            Write-Host "No network adapter found for VM $vmName"
-            return
-        }
-        
-        Set-NetworkAdapter -NetworkAdapter $networkAdapter -NetworkName $networkName -Confirm:$false
-        Write-Host "Network adapter of VM '$vmName' has been set to '$networkName'."
+        Get-NetworkAdapter -VM $vm | Set-NetworkAdapter -NetworkName $networkName -Confirm:$false
+        Write-Host "Network adapter of VM '$vmName' successfully set to '$networkName'."
     }
     catch {
         Write-Host "Failed to set network adapter: $_"
     }
 }
+
 
 
