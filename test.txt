@@ -1,44 +1,23 @@
-function Get-IP {
-    # Prompt user for the virtual machine name
-    $vmName = Read-Host -Prompt "Enter the name of the VM you wish to get the IP of"
-    
-    # Check if the input is valid
-    if ([string]::IsNullOrWhiteSpace($vmName)) {
-        Write-Host "You must enter a valid VM name. Please try again."
-        return
-    }
-
-    try {
-        # Retrieve virtual machine information
-        $vmInfo = Get-VM -Name $vmName
-        if ($null -eq $vmInfo) {
-            Write-Host "No VM found by the name $vmName"
-            return
-        }
-
-        # Display VM hostname (if available) along with the IP address and other details
-        $guestDetails = $vmInfo.ExtensionData.Guest
-        $vmHostName = $guestDetails.HostName
-        $vmIPs = $guestDetails.IpAddress | Where-Object { $_ -notmatch ":" }  # Filtering out IPv6 addresses if necessary
-
-        # Display basic VM info including hostname and primary IP address
-        Write-Host "VM Name: $($vmInfo.Name)"
-        Write-Host "Hostname: $vmHostName"
-        Write-Host "Primary IP Address: $($vmIPs[0])"  # Assumes the first IP is the relevant one
-
-        # Get and display network adapter details
-        $networkAdapters = Get-NetworkAdapter -VM $vmInfo
-        foreach ($adapter in $networkAdapters) {
-            Write-Host "Adapter Name: $($adapter.Name)"
-            Write-Host "Network Name: $($adapter.NetworkName)"
-            Write-Host "MAC Address: $($adapter.MacAddress)"
-            Write-Host "Connection State: $($adapter.ConnectionState.Connected)"
-        }
-    }
-    catch {
-        Write-Host "Failed to retrieve IP information: $_"
-    }
-}
+configure
+# Interface setup for eth0
+delete interfaces ethernet eth0 address dhcp
+set interfaces ethernet eth0 address 10.0.17.200/24
+# Interface setup for eth1
+set interfaces ethernet eth1 address 10.0.5.2/24
+# Gateway and DNS setup
+set protocols static route 0.0.0.0/0 next-hop 10.0.17.2
+set system name-server 10.0.17.4
+# DNS forwarding setup
+set service dns forwarding listen-address 10.0.5.2
+set service dns forwarding allow-from 10.0.5.0/24
+set service dns forwarding system
+# NAT forwarding setup
+set nat source rule 10 outbound-interface eth0
+set nat source rule 10 source address 10.0.5.0/24
+set nat source rule 10 translation address masquerade
+# Setting system hostname
+set system host-name fw-blue1
+commit
 
 
 
