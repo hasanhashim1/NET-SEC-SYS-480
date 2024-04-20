@@ -1,24 +1,26 @@
-function Create_Unique_vSwitchAndPortGroup{
-    param(
-        [string] $Unique_vSwitchName = $(Read-Host -Prompt "Enter the name for the vSwitch"),
-        [string] $Unique_portGroupName = $(Read-Host -Prompt "Enter the name for the port group")
-    )
-    try{
-        Write-Host "Creating vSwitch: $Unique_vSwitchName"
-        Write-Host "Creating port group: $Unique_portGroupName"
+function Create_vSwitch {
+    # Prompt the user for virtual switch and port group names
+    $vSwitchName = Read-Host "Please enter the name for the new virtual switch"
+    $portGroupName = Read-Host "Please enter the name for the new port group"
 
-        New-UniqueVirtualSwitch -VMHost '192.168.7.20' -UniqueName $Unique_vSwitchName
-        Get-VMHost '192.168.7.20' | Get-UniqueVirtualSwitch -UniqueName $Unique_vSwitchName | New-UniqueVirtualPortGroup -UniqueName $Unique_portGroupName
+    try {
+        Write-Host "Creating virtual switch: $vSwitchName"
+        Write-Host "Creating port group: $portGroupName"
 
-        Write-Host "vSwitch and port group created successfully."
+        # Create the virtual switch on the specified host
+        New-VirtualSwitch -VMHost '192.168.7.20' -Name $vSwitchName
+
+        # Create the port group on the newly created virtual switch
+        Get-VMHost '192.168.7.20' | Get-VirtualSwitch -Name $vSwitchName | New-VirtualPortGroup -Name $portGroupName
+
+        Write-Host "Successfully created $vSwitchName and $portGroupName."
     }
-    catch{
-        Write-Host "Error with unique virtual switch and port group creation."
+    catch {
+        Write-Host "Error with virtual switch and port group creation: $_"
         exit
     }
 }
 
-Create_Unique_vSwitchAndPortGroup
 
 
 function Get-IP([string] $vCenter, [string] $virtualMachine){
