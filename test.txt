@@ -1,23 +1,115 @@
-configure
-# Interface setup for eth0
-delete interfaces ethernet eth0 address dhcp
-set interfaces ethernet eth0 address 10.0.17.200/24
-# Interface setup for eth1
-set interfaces ethernet eth1 address 10.0.5.2/24
-# Gateway and DNS setup
-set protocols static route 0.0.0.0/0 next-hop 10.0.17.2
-set system name-server 10.0.17.4
-# DNS forwarding setup
-set service dns forwarding listen-address 10.0.5.2
-set service dns forwarding allow-from 10.0.5.0/24
-set service dns forwarding system
-# NAT forwarding setup
-set nat source rule 10 outbound-interface eth0
-set nat source rule 10 source address 10.0.5.0/24
-set nat source rule 10 translation address masquerade
-# Setting system hostname
-set system host-name fw-blue1
-commit
+// Unique VyOS Configuration Template
+// Note: Replace the placeholder values with actual configuration values.
+// Please review before applying to ensure correctness.
+
+interfaces {
+    ethernet eth0 {
+        // WAN Interface Configuration
+        address {{ wan_ip }}/24
+        description "WAN Interface"
+    }
+    ethernet eth1 {
+        // LAN Interface Configuration
+        address {{ lan_ip }}/24
+        description "LAN Interface"
+    }
+    loopback lo {
+        // Loopback Interface Configuration
+    }
+}
+
+nat {
+    source {
+        rule 10 {
+            // Source NAT Rule Configuration
+            outbound-interface eth0
+            source {
+                address {{ lan }}
+            }
+            translation {
+                address masquerade
+            }
+        }
+    }
+}
+
+protocols {
+    static {
+        // Default Route Configuration
+        route 0.0.0.0/0 {
+            next-hop {{ gateway }}
+        }
+    }
+}
+
+service {
+    // DNS Forwarding Configuration
+    dns {
+        forwarding {
+            system
+            listen-address {{ lan_ip }}
+            allow-from {{ lan }}
+        }
+    }
+    // SSH Service Configuration
+    ssh {
+        listen-address 0.0.0.0
+    }
+}
+
+system {
+    // System Configuration Management
+    config-management {
+        commit-revisions 100
+    }
+    // Connection Tracking Modules
+    conntrack {
+        modules {
+            ftp
+            // Additional connection tracking modules can be configured as needed.
+        }
+    }
+    // Console Configuration
+    console {
+        device ttyS0 {
+            speed 115200
+        }
+    }
+    // Hostname Configuration
+    host-name {{ hostname }}
+    // User Configuration
+    login {
+        user vyos {
+            authentication {
+                encrypted-password {{ password_hash }}
+            }
+        }
+    }
+    // Name Server Configuration
+    name-server {{ name_server }}
+    // NTP Configuration
+    ntp {
+        server time1.vyos.net {}
+        server time2.vyos.net {}
+        // More NTP servers can be added if necessary.
+    }
+    // Syslog Configuration
+    syslog {
+        global {
+            facility all {
+                level info
+            }
+            facility protocols {
+                level debug
+            }
+        }
+    }
+}
+
+// System versioning information - do not remove or alter.
+// vyos-config-version: "..."
+// Release version: 1.4-rolling-202301111512
+
 
 
 
