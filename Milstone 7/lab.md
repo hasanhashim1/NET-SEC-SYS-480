@@ -56,6 +56,53 @@ Now we have ot create a new VM for the Rocky:
 
 ![2.png](./Images/2.png)
 
+Run the following command to get install the screpts form gmcyber github and run it and it is done turn off and take a snapshot called Base:
+```
+wget https://raw.githubusercontent.com/gmcyber/RangeControl/main/src/scripts/base-vms/rhel-sealer.sh
+chmod +x rhel-sealer.sh
+./rhel-sealer.sh
+```
+Before you take the snapshot remove the iso form the cd then take the snapshot:
+
+## 7.2 DHCP Services on fw-blue1 and a static (or dynamic) route on 480-fw
+
+on the pf sense firewall start the shell by using the option "8" and type the command below:
+```
+route add -net 10.0.5.0/24 10.0.17.200
+netstat -r
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
